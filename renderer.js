@@ -1,45 +1,50 @@
-document.getElementById('registration-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-  
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-  
-    let isValid = true;
-  
-    // Очищення попередніх повідомлень про помилки
-    document.getElementById('email-error').textContent = '';
-    document.getElementById('password-error').textContent = '';
-    document.getElementById('confirm-password-error').textContent = '';
-    document.getElementById('success-message').textContent = '';
-  
-    // Валідація email
-    if (!email) {
-      document.getElementById('email-error').textContent = 'Будь ласка, введіть email.';
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      document.getElementById('email-error').textContent = 'Некоректний email.';
-      isValid = false;
+const loginForm = document.getElementById('login-form');
+const userDataDiv = document.getElementById('user-data');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+
+  if (token && userId) {
+    displayUser(userId);
+  }
+});
+
+
+loginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch('https://dummyjson.com/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userId', data.id);
+      displayUser(data.id);
+    } else {
+      console.log('Login failed');
     }
-  
-    // Валідація пароля
-    if (!password) {
-      document.getElementById('password-error').textContent = 'Будь ласка, введіть пароль.';
-      isValid = false;
-    } else if (password.length < 6) {
-      document.getElementById('password-error').textContent = 'Пароль повинен бути не менше 6 символів.';
-      isValid = false;
-    }
-  
-    // Перевірка підтвердження пароля
-    if (password !== confirmPassword) {
-      document.getElementById('confirm-password-error').textContent = 'Паролі не співпадають.';
-      isValid = false;
-    }
-  
-    // Якщо всі поля валідні, показуємо повідомлення про успішну реєстрацію
-    if (isValid) {
-      document.getElementById('success-message').textContent = 'Реєстрація пройшла успішно!';
-    }
-  });
-  
+  } catch (error) {
+    console.error('Error:', error);
+  }
+});
+
+async function displayUser(userId) {
+  const response = await fetch(`https://dummyjson.com/users/${userId}`);
+  const userData = await response.json();
+
+  document.getElementById('user-photo').src = userData.image;
+  document.getElementById('user-name').textContent = userData.firstName + ' ' + userData.lastName;
+  document.getElementById('user-email').textContent = userData.email;
+
+  loginForm.style.display = 'none';
+  userDataDiv.style.display = 'block';
+}
