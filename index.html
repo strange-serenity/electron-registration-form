@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    .form-group .error {
+      color: red;
+      font-size: 12px;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Реєстрація</h1>
+  <form id="registration-form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" />
+      <div class="error" id="email-error"></div>
+    </div>
+    <div class="form-group">
+      <label for="password">Пароль</label>
+      <input type="password" id="password" />
+      <div class="error" id="password-error"></div>
+    </div>
+    <div class="form-group">
+      <label for="confirm-password">Підтвердіть пароль</label>
+      <input type="password" id="confirm-password" />
+      <div class="error" id="confirm-password-error"></div>
+    </div>
+    <button type="submit">Зареєструватися</button>
+    <div class="success" id="success-message"></div>
+  </form>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
